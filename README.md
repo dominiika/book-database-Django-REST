@@ -1,12 +1,10 @@
-# book_database
+# book-database-Django-REST
 
 It is a web application which uses API. It lets the user add books, authors and publishing houses to a database and also edit and delete them.
 
 **Django** version: 2.2.7<br/>
 **Django Rest Framework** version: 3.11.0<br/>
 **Python** version: 3.6.8
-
-You can see the app at https://book--database.herokuapp.com/
 
 
 ### Installing and Prerequisites

@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container jumbotron">
+
+  {% if messages %}
+  <ul class="messages">
+      {% for message in messages %}
+      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+      {% endfor %}
+  </ul>
+  {% endif %}
+
+
+  <div style="text-align:center;">
+    <h2>{{ title }}</h2>
+    <br>
+    <form action="" method="POST">
+      {% csrf_token %}
+      {% if title == 'Add a new book' %}
+      <p><a href="{% url 'add-author' %}">Add a new author</a> |
+        <a href="{% url 'add-publisher' %}">Add a new publisher</a>
+      </p>
+      {% endif %}
+      {{ form.as_p }}
+      <br>
+      <button class="btn btn-primary" type="submit">Submit</button>
+    </form>
+  </div>
+  <p><a href="..">Go back</a></p>
+
+</div>
+
+{% endblock %}

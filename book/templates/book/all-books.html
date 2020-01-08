@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+
+  {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% if not books %}
+  <br>
+  <h5 class="text-center">There are no books added yet</h5>
+  <br>
+  {% endif %}
+
+
+  {% for book in books.all %}
+  <ul class="list-group">
+    <li class="list-group-item">
+
+      <div class="row">
+        <div class="col-md-10">
+          <h5>
+            <a href="{% url 'book-detail' book.id %}">{{ book }}</a>
+          </h5>
+        </div>
+        <div class="col-md-1" style="float:right;">
+          <a href="{% url 'update-book' book.id %}">
+            <i class="fas fa-edit"></i>Edit
+          </a>
+        </div>
+        <div class="col-md-1" style="float:right;">
+          <a href="{% url 'delete-book' book.id %}">
+            <i class="fas fa-times"></i>Delete
+          </a>
+        </div>
+      </div>
+      <br>
+
+    </li>
+  </ul>
+  {% endfor %}
+
+  <br>
+  <div style="text-align:center;">
+    <button class="btn btn-primary">
+      <a href="{% url 'add-book' %}">Add new</a>
+    </button>
+  </div>
+
+</div>
+
+{% endblock %}

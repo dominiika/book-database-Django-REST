@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container jumbotron">
+  <div class="" style="text-align:center;">
+    <h2>{{ title }}</h2>
+    <form action="." method="POST">
+      {% csrf_token %}
+      <br>
+        <button class="btn btn-danger">Yes</button>
+    </form>
+  </div>
+  <a href="..">Go back</a>
+</div>
+
+{% endblock %}

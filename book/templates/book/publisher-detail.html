@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container jumbotron">
+
+  {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  <div style="text-align:center;">
+    <h2>{{ publisher.name }}</h2>
+    <h6>Established in {{ publisher.established }}</h6>
+    <br>
+  </div>
+  <p>Added by: {{ publisher.user }}</p>
+  <br>
+  <h4>Books published by {{ publisher.name }}:</h4>
+  {% if not books %}
+  <p>There are no books added yet.</p>
+  {% endif %}
+
+  {% for book in books.all %}
+  <h5><a href="{% url 'book-detail' book.id %}">{{ book.title }}</a></h5>
+  {% endfor %}
+
+  <br>
+  {% if publisher.user == request.user %}
+  <div class="row" style="text-align:center;">
+    <div class="col-md-6">
+      <button style="float:right;" class="btn btn-primary">
+        <a href="{% url 'update-publisher' publisher.id %}">Edit</a>
+      </button>
+    </div>
+    <div class="col-md-6">
+      <button style="float:left;" class="btn btn-danger">
+        <a href="{% url 'delete-publisher' publisher.id %}">Delete</a>
+      </button>
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+
+{% endblock %}

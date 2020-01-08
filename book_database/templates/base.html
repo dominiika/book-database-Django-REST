@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    {% load staticfiles %}
+    <meta charset="utf-8">
+    <script src="https://kit.fontawesome.com/ce3ee74dcb.js" crossorigin="anonymous"></script>
+
+    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/minty/bootstrap.min.css" rel="stylesheet" integrity="sha384-4HfFay3AYJnEmbgRzxYWJk/Ka5jIimhB/Fssk7NGT9Tj3rkEChpSxLK0btOGzf2I" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <title>Your Book Database</title>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  </head>
+  <body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <a class="navbar-brand" href="{% url 'index' %}">
+        <i class="fas fa-book"></i> Your Book Database
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarText">
+
+        {% if user.is_authenticated %}
+        <ul class="navbar-nav mr-auto">
+          <span class="navbar-text">
+           Logged in as: {{ request.user.username }}
+          </span>
+        </ul>
+        <span class="navbar-text">
+          <a class="link-nav" href="{% url 'logout' %}">
+            <i class="fas fa-sign-out-alt"></i> Log out
+          </a>
+        </span>
+
+        {% else %}
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="link-nav" href="{% url 'login' %}" style="margin-right:10px;">
+              <i class="fas fa-sign-in-alt"></i> Log in
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="link-nav" href="{% url 'signup' %}">
+              <i class="fas fa-user-plus"></i> Sign up
+            </a>
+          </li>
+        </ul>
+        {% endif %}
+      </div>
+    </nav>
+
+    <br>
+    <div class="row">
+      <br>
+      <div class="col-md-2">
+
+        <ul class="list-group">
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a href="{% url 'all-authors'%}">Authors</a>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a href="{% url 'all-publishers'%}">Publishers</a>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a href="{% url 'all-books'%}">Books</a>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a href="/api/">API</a>
+          </li>
+        </ul>
+
+<!--        <div style="text-align:center;">-->
+<!--          <ul class="list-group list-group-flush">-->
+<!--            <li class="list-group-item"><a href="{% url 'all-authors'%}">Authors</a></li>-->
+<!--            <li class="list-group-item"><a href="{% url 'all-publishers'%}">Publishers</a></li>-->
+<!--            <li class="list-group-item"><a href="{% url 'all-books'%}">Books</a></li>-->
+<!--          </ul>-->
+<!--        </div>-->
+
+      </div>
+      <div class="col-md-10">
+        {% block content %}
+        {% endblock %}
+      </div>
+    </div>
+
+  </body>
+</html>

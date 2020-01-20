@@ -1,5 +1,7 @@
 # added by me:
-book_database/secret_key.py
+book_database/settings/secret_key.py
+book_database/settings/local.py
+
 /static
 /media
 db.sqlite3

@@ -1,3 +1,3 @@
 ALLOWED_HOSTS = []
 
-DEBUG = False
+DEBUG = True

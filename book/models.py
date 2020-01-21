@@ -39,8 +39,9 @@ class Publisher(models.Model):
     #  Capitalize the first letter
     def save(self, *args, **kwargs):
         val = getattr(self, 'name', False)
-        if val:
-            setattr(self, 'name', val.title())
+        if val.upper() != val:
+            if val:
+                setattr(self, 'name', val.title())
         super(Publisher, self).save(*args, **kwargs)
 
 

@@ -3,10 +3,15 @@ button a, button a:hover {
   text-decoration: none;
 }
 
+a, a:hover {
+  text-decoration: none;
+}
+
 .link-nav {
   color: white;
 }
 
 .link-nav:hover {
   text-decoration: none;
+  color: white;
 }

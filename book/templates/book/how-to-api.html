@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container jumbotron">
+
+  <h1 class="display-3">How to use the API?</h1>
+
+  <ol>
+    <p class="instruction">
+      <li>
+        To use the API, go to
+        <br>
+        <a href='https://bookdatabase-djangorest.herokuapp.com/api/' target="_blank">
+          https://bookdatabase-djangorest.herokuapp.com/api/
+        </a>
+      </li>
+      <br>
+
+      <li>
+        To sign up through the API, go to
+        <br>
+        <a href='https://bookdatabase-djangorest.herokuapp.com/api/profile/'
+        target="_blank">
+          https://bookdatabase-djangorest.herokuapp.com/api/profile/
+        </a>
+      </li>
+      <br>
+
+      <li>
+        To log in to the API, go to
+        <br>
+        <a href='https://bookdatabase-djangorest.herokuapp.com/api/login/'
+        target="_blank">
+          https://bookdatabase-djangorest.herokuapp.com/api/login/
+        </a>
+        <br>
+        You'll get a special token which needs to be passed in the HTML header,
+        <br>
+        e.g. through
+        <a href='https://www.google.com/search?client=ubuntu&hs=gWD&channel=fs&sxsrf=ACYBGNRBjLRmT3nRqJfk8vVr_dVln0yH8Q%3A1579597887509&ei=P8AmXtHiHs71qwHvwLDYDw&q=ModHeader&oq=ModHeader&gs_l=psy-ab.3..35i39j0l2j0i203l7.8621.10937..11267...0.2..0.95.360.4......0....1..gws-wiz.......0i71j35i304i39j0i13j0i13i30j0i13i10i30j0i8i7i10i30.MbwiaCWyoKo&ved=0ahUKEwiR_uPXrJTnAhXO-ioKHW8gDPsQ4dUDCAo&uact=5'
+        target="_blank">
+          ModHeaders
+        </a>
+        (you can download a
+        <a href='https://www.google.com/search?client=ubuntu&hs=gWD&channel=fs&sxsrf=ACYBGNRBjLRmT3nRqJfk8vVr_dVln0yH8Q%3A1579597887509&ei=P8AmXtHiHs71qwHvwLDYDw&q=ModHeader&oq=ModHeader&gs_l=psy-ab.3..35i39j0l2j0i203l7.8621.10937..11267...0.2..0.95.360.4......0....1..gws-wiz.......0i71j35i304i39j0i13j0i13i30j0i13i10i30j0i8i7i10i30.MbwiaCWyoKo&ved=0ahUKEwiR_uPXrJTnAhXO-ioKHW8gDPsQ4dUDCAo&uact=5'
+        target="_blank">
+          ModHeader extension
+        </a>
+        for your browser).
+
+      </li>
+      <br>
+
+      <li>
+        To see or add books, go to
+        <br>
+        <a href='https://bookdatabase-djangorest.herokuapp.com/api/books/'
+        target="_blank">
+          https://bookdatabase-djangorest.herokuapp.com/api/books/
+        </a>
+        <br>
+        You need to provide the token to add a book (see point 3).
+      </li>
+      <br>
+
+      <li>
+        To see or add authors, go to
+        <br>
+        <a href='https://bookdatabase-djangorest.herokuapp.com/api/authors/'
+        target="_blank">
+          https://bookdatabase-djangorest.herokuapp.com/api/authors/
+        </a>
+        <br>
+        You need to provide the token to add an author (see point 3).
+      </li>
+      <br>
+
+      <li>
+        To see or add publishers, go to
+        <br>
+        <a href='https://bookdatabase-djangorest.herokuapp.com/api/publishers/'
+        target="_blank">
+          https://bookdatabase-djangorest.herokuapp.com/api/publishers/
+        </a>
+        <br>
+        You need to provide the token to add a publisher (see point 3).
+      </li>
+      <br>
+
+      <li>
+        To see, edit or delete a particular item,
+        add its ID at the end of the link,
+        <br>
+        e.g.
+        <a href='https://bookdatabase-djangorest.herokuapp.com/api/books/1/'
+        target="_blank">
+          https://bookdatabase-djangorest.herokuapp.com/api/books/1/
+        </a>
+        <br>
+        To edit or delete the given item, you need to provide the token
+        (see point 3)
+        <br>
+        and be the owner of the item.
+      </li>
+      <br>
+
+      <li>
+        To see registered users, go to
+        <br>
+        <a href='https://bookdatabase-djangorest.herokuapp.com/api/profile/'
+        target="_blank">
+          https://bookdatabase-djangorest.herokuapp.com/api/profile/
+        </a>
+      </li>
+      <br>
+
+    </p>
+  </ol>
+
+</div>
+{% endblock %}

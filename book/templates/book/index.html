@@ -3,13 +3,55 @@
 {% block content %}
 <div class="container jumbotron">
 
-  <h1>Recently added</h1>
+  <h1 class="display-3">Recently added</h1>
   <br>
-  <h2><a href="{% url 'all-books' %}">Books</a></h2>
+  <h2 class="display-4">
+    <a href="{% url 'all-books' %}">Books</a>
+  </h2>
+  {% for book in books.all %}
+  <h4><a href="{% url 'book-detail' book.id %}">
+    {{ book }}
+  </a></h4>
+  {% endfor %}
 
-  <h2><a href="{% url 'all-authors' %}">Authors</a></h2>
+  <p class='text-muted'>
+    <a href='{% url 'all-books' %}'>
+      See more
+    </a>
+  </p>
+  <br>
 
-  <h2><a href="{% url 'all-publishers' %}">Publishers</a></h2>
+  <h2 class="display-4">
+    <a href="{% url 'all-authors' %}">Authors</a>
+  </h2>
+  {% for author in authors.all %}
+  <h4><a href="{% url 'author-detail' author.id %}">
+    {{ author }}
+  </a></h4>
+  {% endfor %}
+
+  <p class='text-muted'>
+    <a href='{% url 'all-authors' %}'>
+      See more
+    </a>
+  </p>
+  <br>
+
+  <h2 class="display-4">
+    <a href="{% url 'all-publishers' %}">Publishers</a>
+  </h2>
+  {% for publisher in publishers.all %}
+  <h4><a href="{% url 'publisher-detail' publisher.id %}">
+    {{ publisher }}
+  </a></h4>
+  {% endfor %}
+
+  <p class='text-muted'>
+    <a href='{% url 'all-publishers' %}'>
+      See more
+    </a>
+  </p>
+  <br>
 
 
 </div>

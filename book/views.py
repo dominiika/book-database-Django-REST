@@ -7,8 +7,26 @@ from django.http import Http404
 
 
 def index(request):
-    context = {}
+    try:
+        books = Book.objects.all()[:3]
+    except IndexError:
+        books = Book.objects.all()
+    try:
+        authors = Author.objects.all()[:3]
+    except IndexError:
+        authors = Author.objects.all()
+    try:
+        publishers = Publisher.objects.all()[:3]
+    except IndexError:
+        publishers = Publisher.objects.all()
+
+    context = {'books': books, 'authors': authors, 'publishers': publishers}
     return render(request, 'book/index.html', context)
+
+
+def how_to_api(request):
+    context = {}
+    return render(request, 'book/how-to-api.html', context)
 
 
 def all_authors(request):

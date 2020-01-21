@@ -27,14 +27,18 @@
           </h5>
         </div>
         <div class="col-md-1" style="float:right;">
+          {% if author.user == request.user %}
           <a href="{% url 'update-author' author.id %}">
             <i class="fas fa-edit"></i>Edit
           </a>
+          {% endif %}
         </div>
         <div class="col-md-1" style="float:right;">
+          {% if author.user == request.user %}
           <a href="{% url 'delete-author' author.id %}">
             <i class="fas fa-times"></i>Delete
           </a>
+          {% endif %}
         </div>
       </div>
       <br>

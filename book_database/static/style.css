@@ -15,3 +15,12 @@ a, a:hover {
   text-decoration: none;
   color: white;
 }
+
+footer {
+  position: fixed;
+  bottom: 0;
+}
+
+.nav-item a, .nav-item a:hover {
+  color: white;
+}

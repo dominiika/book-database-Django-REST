@@ -23,7 +23,7 @@
   {% endif %}
 
   {% for book in books.all %}
-  <h5><a href="{% url 'book-detail' book.id %}">{{ book.title }}</a></h5>
+  <h5><a href="{% url 'book-detail' book.pk %}">{{ book.title }}</a></h5>
   {% endfor %}
 
   <br>
@@ -31,12 +31,12 @@
   <div class="row" style="text-align:center;">
     <div class="col-md-6">
       <button style="float:right;" type="button" class="btn btn-primary">
-        <a href="{% url 'update-author' author.id %}">Edit</a>
+        <a href="{% url 'update-author' author.pk %}">Edit</a>
       </button>
     </div>
     <div class="col-md-6">
       <button style="float:left;" type="button" class="btn btn-danger">
-        <a href="{% url 'delete-author' author.id %}">Delete</a>
+        <a href="{% url 'delete-author' author.pk %}">Delete</a>
       </button>
     </div>
   </div>

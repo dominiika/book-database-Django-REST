@@ -5,89 +5,133 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import Http404
 
-
-def index(request):
-    try:
-        books = Book.objects.all()[:3]
-    except IndexError:
-        books = Book.objects.all()
-    try:
-        authors = Author.objects.all()[:3]
-    except IndexError:
-        authors = Author.objects.all()
-    try:
-        publishers = Publisher.objects.all()[:3]
-    except IndexError:
-        publishers = Publisher.objects.all()
-
-    context = {'books': books, 'authors': authors, 'publishers': publishers}
-    return render(request, 'book/index.html', context)
+# CBV:
+from django.views.generic import View, ListView, DetailView, CreateView, DeleteView, UpdateView
+from django.utils.decorators import method_decorator
 
 
-def how_to_api(request):
-    context = {}
-    return render(request, 'book/how-to-api.html', context)
+class IndexView(View):
+
+    def get(self, request, *args, **kwargs):
+        try:
+            books = Book.objects.all()[:3]
+        except IndexError:
+            books = Book.objects.all()
+        try:
+            authors = Author.objects.all()[:3]
+        except IndexError:
+            authors = Author.objects.all()
+        try:
+            publishers = Publisher.objects.all()[:3]
+        except IndexError:
+            publishers = Publisher.objects.all()
+
+        context = {'books': books, 'authors': authors, 'publishers': publishers}
+        return render(request, 'book/index.html', context)
 
 
-def all_authors(request):
-    authors = Author.objects.all()
-    context = {'authors': authors}
-    return render(request, 'book/all-authors.html', context)
+class HowToUseApiView(View):
+
+    def get(self, request, *args, **kwargs):
+        return render(request, 'book/how-to-api.html')
 
 
-def author_detail(request, author_id):
-    author = Author.objects.get(pk=author_id)
-    books = Book.objects.filter(author=author)
-    context = {'author': author, 'books': books}
-    return render(request, 'book/author-detail.html', context)
+class AuthorListView(ListView):
+    model = Author
+    template_name = 'book/all-authors.html'
+    context_object_name = 'authors'
 
 
-@login_required(login_url="/account/login/")
-def add_author(request):
-    form = AuthorModelForm(request.POST or None)
-    context = {'form': form, 'title': 'Add a new author'}
-    if request.method == 'POST':
-        if form.is_valid():
-            obj = form.save(commit=False)
-            obj.user = request.user
+class AuthorDetailView(DetailView):
+    model = Author
+    template_name = 'book/author-detail.html'
+    context_object_name = 'author'
+
+    def get_object(self):
+        obj = super().get_object()
+        return obj
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        author = self.get_object()
+        books = Book.objects.filter(author=author)
+        context['books'] = books
+        return context
+
+
+@method_decorator(login_required, name='post')
+@method_decorator(login_required, name='get')
+class AuthorCreateView(CreateView):
+    model = Author
+    template_name = 'book/form.html'
+    form_class = AuthorModelForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Add a new author'
+        return context
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.save()
+        messages.success(self.request, "Author successfully created!")
+        return redirect('/authors/')
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Author not successfully created")
+        return render(self.request, 'book/form.html')
+
+
+@method_decorator(login_required, name='post')
+@method_decorator(login_required, name='get')
+class AuthorUpdateView(UpdateView):
+    model = Author
+    template_name = 'book/form.html'
+    form_class = AuthorModelForm
+    context_object_name = 'author'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = f'Edit the author called {self.get_object()}'
+        return context
+
+    def form_valid(self, form):
+        if self.get_object().user == self.request.user:
+            form.instance.user = self.request.user
             form.save()
-            messages.success(request, "Author successfully created!")
+            messages.success(self.request, "Author successfully edited!")
             return redirect('/authors/')
         else:
-            messages.error(request, "Author not successfully created")
-    return render(request, 'book/form.html', context)
+            raise Http404
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Author not successfully edited")
+        return render(self.request, 'book/form.html')
 
 
-@login_required(login_url="/account/login/")
-def update_author(request, author_id):
-    author = Author.objects.get(pk=author_id)
-    form = AuthorModelForm(request.POST or None, instance=author)
-    context = {'form': form, 'author': author, 'title': f'Update the author called {author.first_name} {author.last_name}'}
-    if author.user == request.user:
-        if request.method == 'POST':
-            if form.is_valid():
-                form.save()
-                messages.success(request, "Author successfully edited!")
-                return redirect(f'/authors/{author.id}/')
-            else:
-                messages.error(request, "Author not successfully edited")
-        return render(request, 'book/form.html', context)
-    else:
-        raise Http404
+@method_decorator(login_required, name='post')
+@method_decorator(login_required, name='get')
+class AuthorDeleteView(DeleteView):
+    model = Author
+    template_name = 'book/delete.html'
+    success_url = '/authors/'
+    context_object_name = 'author'
+    success_message = "Author successfully deleted!"
 
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super(AuthorDeleteView, self).delete(request, *args, **kwargs)
 
-@login_required(login_url="/account/login/")
-def delete_author(request, author_id):
-    author = get_object_or_404(Author, pk=author_id)
-    if author.user == request.user:
-        if request.method == 'POST':
-            author.delete()
-            messages.success(request, "Author successfully deleted!")
-            return redirect('/authors/')
-        context = {'author': author, 'title': f'Do you want to delete the author called {author.first_name} {author.last_name}?'}
-        return render(request, 'book/delete.html', context)
-    else:
-        raise Http404
+    def get_object(self):
+        obj = super().get_object()
+        if obj.user != self.request.user:
+            raise Http404
+        return obj
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = f'Do you want to delete the author called {self.get_object()}?'
+        return context
 
 
 def all_publishers(request):

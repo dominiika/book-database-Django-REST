@@ -1,15 +1,29 @@
-from django.urls import path
+from django.urls import path, re_path
 from . import views
 
-urlpatterns = [
-    path('', views.index, name='index'),
-    path('how-to/', views.how_to_api, name='how-to-api'),
+# https://www.codingforentrepreneurs.com/blog/how-django-urls-work-with-regular-expressions/
 
-    path('authors/', views.all_authors, name='all-authors'),
-    path('authors/add/', views.add_author, name='add-author'),
-    path('authors/<int:author_id>/', views.author_detail, name='author-detail'),
-    path('authors/<int:author_id>/edit/', views.update_author, name='update-author'),
-    path('authors/<int:author_id>/delete/', views.delete_author, name='delete-author'),
+urlpatterns = [
+    # path('', views.IndexView.as_view(), name='index'),
+    re_path(r'^$', views.IndexView.as_view(), name='index'),
+
+    # path('how-to/', views.HowToUseApiView.as_view(), name='how-to-api'),
+    re_path('^how-to/$', views.HowToUseApiView.as_view(), name='how-to-api'),
+
+    # path('authors/', views.AuthorListView.as_view(), name='all-authors'),
+    re_path('^authors/$', views.AuthorListView.as_view(), name='all-authors'),
+
+    # path('authors/add/', views.AuthorCreateView.as_view(), name='add-author'),
+    re_path('^authors/add/$', views.AuthorCreateView.as_view(), name='add-author'),
+
+    # path('authors/<int:pk>/', views.AuthorDetailView.as_view(), name='author-detail'),
+    re_path('^authors/(?P<pk>\d+)/$', views.AuthorDetailView.as_view(), name='author-detail'),
+
+    # path('authors/<int:pk>/edit/', views.AuthorUpdateView.as_view(), name='update-author'),
+    re_path('^authors/(?P<pk>\d+)/edit/$', views.AuthorUpdateView.as_view(), name='update-author'),
+
+    path('authors/<int:pk>/delete/', views.AuthorDeleteView.as_view(), name='delete-author'),
+    # path('^authors/(?P<pk>\d+)/delete/$', views.AuthorDeleteView.as_view(), name='delete-author'),
 
     path('publishers/', views.all_publishers, name='all-publishers'),
     path('publishers/add/', views.add_publisher, name='add-publisher'),

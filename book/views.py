@@ -1,13 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Author, Publisher, Book
 from .forms import AuthorModelForm, PublisherModelForm, BookModelForm
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import Http404
 
 # CBV:
 from django.views.generic import View, ListView, DetailView, CreateView, DeleteView, UpdateView
-from django.utils.decorators import method_decorator
 
 
 class IndexView(View):
@@ -46,10 +44,6 @@ class AuthorDetailView(DetailView):
     model = Author
     template_name = 'book/author-detail.html'
     context_object_name = 'author'
-
-    def get_object(self):
-        obj = super().get_object()
-        return obj
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -93,7 +87,7 @@ class AuthorUpdateView(UpdateView):
 
     def form_valid(self, form):
         if self.get_object().user == self.request.user:
-            form.instance.user = self.request.user
+            # form.instance.user = self.request.user
             form.save()
             messages.success(self.request, "Author successfully edited!")
             return redirect('/authors/')
@@ -128,123 +122,169 @@ class AuthorDeleteView(DeleteView):
         return context
 
 
-def all_publishers(request):
-    publishers = Publisher.objects.all()
-    context = {'publishers': publishers}
-    return render(request, 'book/all-publishers.html', context)
+class PublisherListView(ListView):
+    model = Publisher
+    template_name = 'book/all-publishers.html'
+    context_object_name = 'publishers'
 
 
-def publisher_detail(request, publisher_id):
-    publisher = Publisher.objects.get(pk=publisher_id)
-    books = Book.objects.filter(publisher=publisher)
-    context = {'publisher': publisher, 'books': books}
-    return render(request, 'book/publisher-detail.html', context)
+class PublisherDetailView(DetailView):
+    model = Publisher
+    template_name = 'book/publisher-detail.html'
+    context_object_name = 'publisher'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        publisher = self.get_object()
+        books = Book.objects.filter(publisher=publisher)
+        context['books'] = books
+        return context
 
 
-def add_publisher(request):
-    form = PublisherModelForm(request.POST or None)
-    context = {'form': form, 'title': 'Add a new publisher'}
+class PublisherCreateView(CreateView):
+    model = Publisher
+    template_name = 'book/form.html'
+    form_class = PublisherModelForm
 
-    if request.method == 'POST':
-        if form.is_valid():
-            obj = form.save(commit=False)
-            obj.user = request.user
-            obj.save()
-            messages.success(request, "Publisher successfully created!")
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Add a new publisher'
+        return context
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.save()
+        messages.success(self.request, "Publisher successfully created!")
+        return redirect('/publishers/')
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Publisher not successfully created")
+        return render(self.request, 'book/form.html')
+
+
+class PublisherUpdateView(UpdateView):
+    model = Publisher
+    template_name = 'book/form.html'
+    form_class = PublisherModelForm
+    context_object_name = 'publisher'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = f'Edit the publisher called {self.get_object()}'
+        return context
+
+    def form_valid(self, form):
+        if self.get_object().user == self.request.user:
+            # form.instance.user = self.request.user
+            form.save()
+            messages.success(self.request, "Publisher successfully edited!")
             return redirect('/publishers/')
         else:
-            messages.error(request, "Publisher not successfully created!")
-    return render(request, 'book/form.html', context)
+            raise Http404
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Publisher not successfully edited")
+        return render(self.request, 'book/form.html')
 
 
-def update_publisher(request, publisher_id):
-    publisher = Publisher.objects.get(pk=publisher_id)
-    form = PublisherModelForm(request.POST or None, instance=publisher)
-    context = {'form': form, 'publisher': publisher,
-               'title': f'Update the publisher called {publisher.name}'}
-    if publisher.user == request.user:
-        if request.method == 'POST':
-            if form.is_valid():
-                form.save()
-                messages.success(request, "Publisher successfully edited!")
-                return redirect(f'/publishers/{publisher.id}/')
-            else:
-                messages.error(request, "Publisher not successfully edited!")
-        return render(request, 'book/form.html', context)
-    else:
-        raise Http404
+class PublisherDeleteView(DeleteView):
+    model = Publisher
+    template_name = 'book/delete.html'
+    success_url = '/publishers/'
+    context_object_name = 'publisher'
+    success_message = "Publisher successfully deleted!"
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super(PublisherDeleteView, self).delete(request, *args, **kwargs)
+
+    def get_object(self):
+        obj = super().get_object()
+        if obj.user != self.request.user:
+            raise Http404
+        return obj
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = f'Do you want to delete the publisher called {self.get_object()}?'
+        return context
 
 
-def delete_publisher(request, publisher_id):
-    publisher = get_object_or_404(Publisher, pk=publisher_id)
-
-    if publisher.user == request.user:
-        if request.method == 'POST':
-            publisher.delete()
-            messages.success(request, "Publisher successfully deleted!")
-            return redirect('/publishers/')
-        context = {'publisher': publisher, 'title': f'Do you want to delete the publisher called {publisher.name}?'}
-        return render(request, 'book/delete.html', context)
-    else:
-        raise Http404
+class BookListView(ListView):
+    model = Book
+    template_name = 'book/all-books.html'
+    context_object_name = 'books'
 
 
-def all_books(request):
-    books = Book.objects.all()
-    context = {'books': books}
-    return render(request, 'book/all-books.html', context)
+class BookDetailView(DetailView):
+    model = Book
+    template_name = 'book/book-detail.html'
+    context_object_name = 'book'
 
 
-def book_detail(request, book_id):
-    book = Book.objects.get(pk=book_id)
-    context = {'book': book}
-    return render(request, 'book/book-detail.html', context)
+class BookCreateView(CreateView):
+    model = Book
+    template_name = 'book/form.html'
+    form_class = BookModelForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Add a new book'
+        return context
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.save()
+        messages.success(self.request, "Book successfully created!")
+        return redirect('/books/')
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Book not successfully created")
+        return render(self.request, 'book/form.html')
 
 
-def add_book(request):
-    form = BookModelForm(request.POST or None)
-    context = {'form': form, 'title': 'Add a new book'}
-    if request.method == 'POST':
-        if form.is_valid():
-            obj = form.save(commit=False)
-            obj.user = request.user
-            obj.save()
-            messages.success(request, "Book successfully created!")
+class BookUpdateView(UpdateView):
+    model = Book
+    template_name = 'book/form.html'
+    form_class = BookModelForm
+    context_object_name = 'book'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Add a new book'
+        return context
+
+    def form_valid(self, form):
+        if form.instance.user == self.request.user:
+            form.save()
+            messages.success(self.request, "Book successfully edited!")
             return redirect('/books/')
         else:
-            messages.error(request, "Book not successfully created!")
-    return render(request, 'book/form.html', context)
+            raise Http404
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Book not successfully edited")
+        return render(self.request, 'book/form.html')
 
 
-def update_book(request, book_id):
-    book = Book.objects.get(pk=book_id)
-    form = BookModelForm(request.POST or None, instance=book)
-    context = {'form': form, 'book': book,
-               'title': f'Update the book called {book.title}'}
-    if book.user == request.user:
-        if request.method == 'POST':
-            if form.is_valid():
-                form.save()
-                messages.success(request, "Book successfully edited!")
-                return redirect(f'/books/{book.id}/')
-            else:
-                messages.error(request, "Book not successfully edited!")
-        return render(request, 'book/form.html', context)
-    else:
-        raise Http404
+class BookDeleteView(DeleteView):
+    model = Book
+    template_name = 'book/delete.html'
+    success_url = '/books/'
+    context_object_name = 'book'
+    success_message = "Book successfully deleted!"
 
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super(BookDeleteView, self).delete(request, *args, **kwargs)
 
-def delete_book(request, book_id):
-    book = get_object_or_404(Book, pk=book_id)
+    def get_object(self):
+        obj = super().get_object()
+        if obj.user != self.request.user:
+            raise Http404
+        return obj
 
-    if book.user == request.user:
-        if request.method == 'POST':
-            book.delete()
-            messages.success(request, "Book successfully deleted!")
-            return redirect('/books/')
-        context = {'book': book, 'title': f'Do you want to delete the book called {book.title}?'}
-        return render(request, 'book/delete.html', context)
-    else:
-        raise Http404
-
-
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = f'Do you want to delete the book called {self.get_object()}?'
+        return context

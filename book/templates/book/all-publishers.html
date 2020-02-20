@@ -24,19 +24,19 @@
       <div class="row">
         <div class="col-md-10">
           <h5>
-            <a href="{% url 'publisher-detail' publisher.id %}">{{ publisher }}</a>
+            <a href="{% url 'publisher-detail' publisher.pk %}">{{ publisher }}</a>
           </h5>
         </div>
         <div class="col-md-1" style="float:right;">
           {% if publisher.user == request.user %}
-          <a href="{% url 'update-publisher' publisher.id %}">
+          <a href="{% url 'update-publisher' publisher.pk %}">
             <i class="fas fa-edit"></i>Edit
           </a>
           {% endif %}
         </div>
         <div class="col-md-1" style="float:right;">
           {% if publisher.user == request.user %}
-          <a href="{% url 'delete-publisher' publisher.id %}">
+          <a href="{% url 'delete-publisher' publisher.pk %}">
             <i class="fas fa-times"></i>Delete
           </a>
           {% endif %}

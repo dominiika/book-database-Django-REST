@@ -1,6 +1,6 @@
 from api import viewsets
 from rest_framework.routers import DefaultRouter
-from django.urls import path, include
+from django.urls import re_path, include
 
 
 router = DefaultRouter()
@@ -11,7 +11,7 @@ router.register('publishers', viewsets.PublisherViewSet, basename='publishers-ap
 
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('login/', viewsets.UserLoginApiView.as_view()),
+    re_path(r'^', include(router.urls)),
+    re_path(r'^login/$', viewsets.UserLoginApiView.as_view()),
 
 ]

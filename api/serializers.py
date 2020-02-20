@@ -27,7 +27,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class BookSerializer(serializers.ModelSerializer):
 
-    user = serializers.SerializerMethodField('get_user')
+    # user = serializers.SerializerMethodField('get_user')
 
     def get_user(self, obj):
         return obj.user.username

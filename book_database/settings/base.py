@@ -60,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'book_database.middleware.LoginRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'book_database.urls'
@@ -144,4 +145,18 @@ MEDIA_URL = '/media/'
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
-LOGIN_URL= '/account/login/'
+LOGIN_URL = '/account/login/'
+
+# these are excluded from LoginRequiredMiddleware:
+LOGIN_EXEMPT_URLS = (
+    r'^account/signup/$',
+    r'^api/',
+    r'^$',
+    r'^how-to/$',
+    r'^publishers/$',
+    r'^publishers/(?P<publisher_id>\d+)/$',
+    r'^authors/$',
+    r'^authors/(?P<pk>\d+)/$',
+    r'^books/$',
+    r'^books/(?P<book_id>\d+)/$',
+)

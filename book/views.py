@@ -59,8 +59,6 @@ class AuthorDetailView(DetailView):
         return context
 
 
-@method_decorator(login_required, name='post')
-@method_decorator(login_required, name='get')
 class AuthorCreateView(CreateView):
     model = Author
     template_name = 'book/form.html'
@@ -82,8 +80,6 @@ class AuthorCreateView(CreateView):
         return render(self.request, 'book/form.html')
 
 
-@method_decorator(login_required, name='post')
-@method_decorator(login_required, name='get')
 class AuthorUpdateView(UpdateView):
     model = Author
     template_name = 'book/form.html'
@@ -109,8 +105,6 @@ class AuthorUpdateView(UpdateView):
         return render(self.request, 'book/form.html')
 
 
-@method_decorator(login_required, name='post')
-@method_decorator(login_required, name='get')
 class AuthorDeleteView(DeleteView):
     model = Author
     template_name = 'book/delete.html'
@@ -147,7 +141,6 @@ def publisher_detail(request, publisher_id):
     return render(request, 'book/publisher-detail.html', context)
 
 
-@login_required(login_url="/account/login/")
 def add_publisher(request):
     form = PublisherModelForm(request.POST or None)
     context = {'form': form, 'title': 'Add a new publisher'}
@@ -164,7 +157,6 @@ def add_publisher(request):
     return render(request, 'book/form.html', context)
 
 
-@login_required(login_url="/account/login/")
 def update_publisher(request, publisher_id):
     publisher = Publisher.objects.get(pk=publisher_id)
     form = PublisherModelForm(request.POST or None, instance=publisher)
@@ -183,7 +175,6 @@ def update_publisher(request, publisher_id):
         raise Http404
 
 
-@login_required(login_url="/account/login/")
 def delete_publisher(request, publisher_id):
     publisher = get_object_or_404(Publisher, pk=publisher_id)
 
@@ -210,7 +201,6 @@ def book_detail(request, book_id):
     return render(request, 'book/book-detail.html', context)
 
 
-@login_required(login_url="/account/login/")
 def add_book(request):
     form = BookModelForm(request.POST or None)
     context = {'form': form, 'title': 'Add a new book'}
@@ -226,7 +216,6 @@ def add_book(request):
     return render(request, 'book/form.html', context)
 
 
-@login_required(login_url="/account/login/")
 def update_book(request, book_id):
     book = Book.objects.get(pk=book_id)
     form = BookModelForm(request.POST or None, instance=book)
@@ -245,7 +234,6 @@ def update_book(request, book_id):
         raise Http404
 
 
-@login_required(login_url="/account/login/")
 def delete_book(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
 
